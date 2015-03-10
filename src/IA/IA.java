@@ -15,7 +15,7 @@ public class IA extends Joueur {
      * Constructeur
      */
     public IA() {
-        super("Random IA");
+        super("IA aleatoire");
     }
     
     /**
