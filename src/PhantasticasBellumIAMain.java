@@ -62,8 +62,7 @@ public class PhantasticasBellumIAMain {
 
     public static void main(String[] args) {
         // Initialise chaque joueur
-//        Joueur j1 = new Joueur("Joueur 1");
-        Joueur j1 = new IA();
+        Joueur j1 = new Joueur("Joueur 1");
         Joueur j2 = new IA();
         
         Fenetre fenetre = new Fenetre();

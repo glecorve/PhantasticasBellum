@@ -30,6 +30,5 @@ public class Deplacement implements Action {
     @Override
     public void appliquer(GestionnairePartie partie) {
         partie.getPersonnageActif().setPosition(destination);
-        System.out.println("Après : " + partie.getPersonnageActif().toString());
     }
 }

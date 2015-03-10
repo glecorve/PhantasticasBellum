@@ -34,7 +34,7 @@ public class Fenetre  extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                this.setResizable(false);
+// 		this.setResizable(false);
 	}
         
         /**
@@ -51,7 +51,7 @@ public class Fenetre  extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                this.setResizable(false);
+// 		this.setResizable(false);
 	}
 	
 	/**
