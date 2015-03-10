@@ -1,6 +1,6 @@
 package Model;
 
-import Controleur.GestionnairePartie;
+import Controleur.Partie;
 
 /**
  * Classe qui modelise un deplacement d'un Personnage
@@ -42,7 +42,7 @@ public class Attaque implements Action {
     }
 
     @Override
-    public void appliquer(GestionnairePartie partie) {
+    public void appliquer(Partie partie) {
         getCible().appliquerSort(getSort());
     }
 }

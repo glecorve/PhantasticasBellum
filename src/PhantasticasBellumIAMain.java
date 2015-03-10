@@ -1,6 +1,6 @@
 
 import Controleur.ControleurPlacement;
-import Controleur.GestionnairePartie;
+import Controleur.Partie;
 import Exception.ExceptionPersonnage;
 import Exception.ExceptionParamJeu;
 import GUI.Fenetre;
@@ -33,7 +33,7 @@ public class PhantasticasBellumIAMain {
      * @param p La partie qui va être jouée
      * @param cote Côté du plateau où débutera le joueur
      */
-    public static void initPersonnagesJoueur(Joueur j, GestionnairePartie p, ControleurPlacement.coteJeu cote) throws ExceptionPersonnage {
+    public static void initPersonnagesJoueur(Joueur j, Partie p, ControleurPlacement.coteJeu cote) throws ExceptionPersonnage {
         List<Personnage> all_characters = p.getPersonnagesDisponibles();
         int n = all_characters.size();
 
@@ -66,7 +66,7 @@ public class PhantasticasBellumIAMain {
         Joueur j2 = new IA();
         
         Fenetre fenetre = new Fenetre();
-        GestionnairePartie maPartie = new GestionnairePartie(false, j1, j2);
+        Partie maPartie = new Partie(false, j1, j2);
         fenetre.setPartie(maPartie);
 
         try {

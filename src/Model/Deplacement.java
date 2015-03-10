@@ -1,6 +1,6 @@
 package Model;
 
-import Controleur.GestionnairePartie;
+import Controleur.Partie;
 
 /**
  * Classe qui modelise un deplacement d'un personnage
@@ -28,7 +28,7 @@ public class Deplacement implements Action {
     }
 
     @Override
-    public void appliquer(GestionnairePartie partie) {
+    public void appliquer(Partie partie) {
         partie.getPersonnageActif().setPosition(destination);
     }
 }

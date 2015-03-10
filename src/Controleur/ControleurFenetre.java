@@ -266,7 +266,7 @@ public class ControleurFenetre{
 	 * Getter sur le modele du jeu en cours
 	 * @return jeu en cours
 	 */
-	public GestionnairePartie getMaPartie(){
+	public Partie getMaPartie(){
 		return maVue.getMaPartie();
 	}
 }

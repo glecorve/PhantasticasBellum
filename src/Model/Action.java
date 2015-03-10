@@ -5,7 +5,7 @@
  */
 package Model;
 
-import Controleur.GestionnairePartie;
+import Controleur.Partie;
 
 /**
  *
@@ -16,5 +16,5 @@ public interface Action {
      * Applique l'action sur une partie en cours
      * @param partie Partie a modifier
      */
-    public void appliquer(GestionnairePartie partie);
+    public void appliquer(Partie partie);
 }

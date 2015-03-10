@@ -1,4 +1,4 @@
-import Controleur.GestionnairePartie;
+import Controleur.Partie;
 
 /**
  * Classe de lancement du jeu
@@ -9,7 +9,7 @@ import Controleur.GestionnairePartie;
 public class PhantasticasBellumMain {
 
 	public static void main(String[] args) {
-		GestionnairePartie maPartie = new GestionnairePartie();
+		Partie maPartie = new Partie();
 	}
 
 }

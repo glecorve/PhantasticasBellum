@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *
  */
 
-public class GestionnairePartie {
+public class Partie {
         /******************DELAI******************/
         private static final int DELAY = 4;
 	/******************ATTRIBUT******************/
@@ -63,7 +63,7 @@ public class GestionnairePartie {
 	/**
 	 * Constructeur de la classe Partie
 	 */
-	public GestionnairePartie(){
+	public Partie(){
 		new Fenetre(this);
 		initJoueurs();
 		initPersonnagesDisponibles();
@@ -74,7 +74,7 @@ public class GestionnairePartie {
         /**
 	 * Constructeur de la classe Partie
 	 */
-	public GestionnairePartie(boolean creerFenetre, Joueur j1, Joueur j2){
+	public Partie(boolean creerFenetre, Joueur j1, Joueur j2){
                 if (creerFenetre) {
                     new Fenetre(this);
                 }

@@ -106,7 +106,7 @@ public class ControleurParamJoueur {
 	 * Retourne la partie en cours
 	 * @return Partie
 	 */
-	public GestionnairePartie getMaPartie() {
+	public Partie getMaPartie() {
 		return getControleurParent().getMaPartie();
 	}
 

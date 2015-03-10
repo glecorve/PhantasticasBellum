@@ -13,14 +13,14 @@ import Controleur.*;
 public class Fenetre  extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
-	private GestionnairePartie maPartie;
+	private Partie maPartie;
 	private ControleurFenetre controleur;
 	
 	/**
 	 * Constructeur
 	 * @param maPartie la partie
 	 */
-	public Fenetre(GestionnairePartie maPartie){
+	public Fenetre(Partie maPartie){
 		super("PhantasticasBellum");
 		setLocale(Locale.FRENCH);
 		
@@ -69,7 +69,7 @@ public class Fenetre  extends JFrame{
 	 * Retourne la partie en cours
 	 * @return objet Partie
 	 */
-	public GestionnairePartie getMaPartie() {
+	public Partie getMaPartie() {
 		return maPartie;
 	}
 	
@@ -85,7 +85,7 @@ public class Fenetre  extends JFrame{
          * Définit la partie associée à la fenêtre courante
          * @param maPartie La partie à associer
          */
-        public void setPartie(GestionnairePartie maPartie) {
+        public void setPartie(Partie maPartie) {
             this.maPartie = maPartie;
             this.controleur = new ControleurFenetre(this);
 		

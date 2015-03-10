@@ -212,7 +212,7 @@ public class ControleurCombat extends AbstractControleurJeu {
                         executor.shutdownNow();
                     }
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(GestionnairePartie.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Partie.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Coup choisi = "+calcul.getCoupChoisi().toString());
                 getMaPartie().appliquerCoup(calcul.getCoupChoisi());

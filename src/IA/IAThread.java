@@ -5,7 +5,7 @@
  */
 package IA;
 
-import Controleur.GestionnairePartie;
+import Controleur.Partie;
 import Model.Coup;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
@@ -26,7 +26,7 @@ public class IAThread extends Thread {
     /**
      * Partie en cours
      */
-    private final GestionnairePartie partie;
+    private final Partie partie;
     
     /**
      * Service d'execution du thread
@@ -44,7 +44,7 @@ public class IAThread extends Thread {
      * @param partie Partie en cours
      * @param executor Service d'execution du thread
      */
-    public IAThread(IA ia, GestionnairePartie partie, ExecutorService executor) {
+    public IAThread(IA ia, Partie partie, ExecutorService executor) {
         this.ia = ia;
         this.partie = partie;
         this.executor = executor;

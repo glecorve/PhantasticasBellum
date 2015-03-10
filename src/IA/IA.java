@@ -1,6 +1,6 @@
 package IA;
 
-import Controleur.GestionnairePartie;
+import Controleur.Partie;
 import Model.Coup;
 import Model.Joueur;
 import java.util.List;
@@ -23,7 +23,7 @@ public class IA extends Joueur {
      * @param p Partie en cours
      * @return un coup
      */
-    public Coup getCoup(GestionnairePartie p) {
+    public Coup getCoup(Partie p) {
         List<Coup> coups = p.getTousCoups();
         return coups.get((int) (Math.random()*(coups.size()-1)));
     }

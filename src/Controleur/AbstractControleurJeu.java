@@ -47,7 +47,7 @@ public abstract class AbstractControleurJeu {
 	 * Methode abstraite qui renverra la vue courrante
 	 * @return la vue courante
 	 */
-	public GestionnairePartie getMaPartie() {
+	public Partie getMaPartie() {
 		return controleurParent.getMaPartie();
 	}
 }
