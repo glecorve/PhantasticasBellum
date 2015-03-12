@@ -5,17 +5,10 @@ import Controleur.ControleurPlacement.coteJeu;
 import Exception.ExceptionPersonnage;
 import Exception.ExceptionParamJeu;
 import GUI.Fenetre;
-import IA.IA;
-import IA.IAThread;
 
 import java.util.*;
 
 import Personnages.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * La classe Partie est le controleur du systeme, elle est le pivot etre le model et la vue
@@ -25,12 +18,15 @@ import java.util.logging.Logger;
 
 public class Partie {
         /******************DELAI******************/
+    
         private static final int DELAY = 4;
+        
 	/******************ATTRIBUT******************/
+        
 	/**
 	 * Collection Personnage disponible lors de la selection des equipes
 	 */
-	private List<Personnage> PersonnagesDisponibles = new ArrayList<Personnage>();
+	private static List<Personnage> personnagesDisponibles = new ArrayList<Personnage>();
 	
 	/**
 	 * Taille des equipes
@@ -74,7 +70,7 @@ public class Partie {
         /**
 	 * Constructeur de la classe Partie
 	 */
-	public Partie(boolean creerFenetre, Joueur j1, Joueur j2){
+	public Partie(boolean creerFenetre, Joueur j1, Joueur j2) {
                 if (creerFenetre) {
                     new Fenetre(this);
                 }
@@ -88,6 +84,37 @@ public class Partie {
                 joueurSuivant();
                 joueurSuivant();
 	}
+        
+        /**
+         * Clone la partie courante
+         * @return une nouvelle partie
+         */
+        public Partie clone() {
+            Partie clone = new Partie(false, null, null);
+            
+            clone.tailleEquipe = this.tailleEquipe;
+            clone.plateauHauteur = this.plateauHauteur;
+            clone.plateauLargeur = this.plateauLargeur;
+                    
+            int n = joueurs.size();
+            boolean found_current_player = false;
+            clone.joueurIterateur = clone.joueurs.iterator();
+
+            for (int i = 0; i < Math.min(n, 2); i++) {
+                Joueur j_clone = (Joueur) this.joueurs.get(i).clone();
+                clone.joueurs.set(i, j_clone);
+                // Verifier si on est sur le joueur courant
+                if (joueurActuel == this.joueurs.get(i)) {
+                    clone.joueurActuel = j_clone;
+                    found_current_player = true;
+                }
+                // Avancer l'iterateur si le joueur courant n'a pas encore ete atteint
+                if (!found_current_player) {
+                    clone.joueurIterateur.next();
+                }
+            }
+            return clone;
+        }
 	
 	
 	/******************INITIALISATION******************/
@@ -122,6 +149,7 @@ public class Partie {
 	 * Initialisation des Personnage disponible dans le jeu
 	 */
 	private void initPersonnagesDisponibles(){
+                getPersonnagesDisponibles().clear();
 		getPersonnagesDisponibles().add(new Magicien());
 		getPersonnagesDisponibles().add(new Guerrier());
 		getPersonnagesDisponibles().add(new Voleur());
@@ -296,7 +324,7 @@ public class Partie {
 	}
 	
 	public List<Personnage> getPersonnagesDisponibles() {
-		return PersonnagesDisponibles;
+		return personnagesDisponibles;
 	}
 	public int getTailleEquipe() {
 		return tailleEquipe;
@@ -452,7 +480,7 @@ public class Partie {
 	
 	/******************PRIVATE SETTERS******************/
 	private void setPersonnagesDisponibles(List<Personnage> personnagesDisponible) {
-		PersonnagesDisponibles = personnagesDisponible;
+		personnagesDisponibles = personnagesDisponible;
 	}
 	private void setTailleEquipe(int tailleEquipe) {
 		this.tailleEquipe = tailleEquipe;

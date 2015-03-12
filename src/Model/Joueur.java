@@ -28,6 +28,17 @@ public class Joueur {
 		setEquipe(new Equipe());
 		setNom(nom);
 	}
+        
+        /**
+         * Clone en profondeur l'objet courant
+         * @return un nouveau joueur
+         */
+        public Joueur clone() {
+            Joueur clone = new Joueur(this.nom);
+            clone.equipe = (Equipe) this.equipe.clone();
+            clone.nombreVictoire = this.nombreVictoire;
+            return clone;
+        }
 
 	/**
 	 * Instancie une nouvelle equipe

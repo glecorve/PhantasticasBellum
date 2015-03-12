@@ -66,6 +66,14 @@ public class IAThread extends Thread {
         catch (Exception ex) { /* Rien */ }
         finally {
             executor.shutdown();
+            // Si aucun coup n'a ete retourne, prendre le dernier coup memorise
+            if (coupChoisi == null) {
+                coupChoisi = ia.getCoupMemorise();
+            }
+            // Si aucun coup memorise, prendre un coup au hasard
+            if (coupChoisi == null) {
+                ((IA) ia).getCoup(partie);
+            }
         }
         try {
             sleep(100);

@@ -4,7 +4,6 @@ import Controleur.Partie;
 import Exception.ExceptionPersonnage;
 import Exception.ExceptionParamJeu;
 import GUI.Fenetre;
-import GUI.Vue3.VueJeuCombat;
 import IA.IA;
 import Model.Joueur;
 import Model.Personnage;
@@ -63,6 +62,7 @@ public class PhantasticasBellumIAMain {
     public static void main(String[] args) {
         // Initialise chaque joueur
         Joueur j1 = new Joueur("Joueur 1");
+//        Joueur j1 = new IA();
         Joueur j2 = new IA();
         
         Fenetre fenetre = new Fenetre();

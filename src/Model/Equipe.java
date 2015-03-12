@@ -20,15 +20,35 @@ public class Equipe {
 	private etatTour monEtatTour = etatTour.PASSIF;
 	
 	private Sort attaque = null;
-	private List<Personnage> PersonnagesAttaques = null;
-	private Personnage PersonnageActif = null;
+	private List<Personnage> personnagesAttaques = null;
+	private Personnage personnageActif = null;
 	
 	/**
 	 * Constructeur
 	 */
 	public Equipe(){
-		PersonnagesAttaques = new ArrayList<Personnage>();
+		personnagesAttaques = new ArrayList<Personnage>();
 	}
+        
+        /**
+         * Clone l'equipe courante
+         * @return une nouvelle equipe
+         */
+        public Equipe clone() {
+                Equipe clone = new Equipe();
+                clone.monEtatTour = this.monEtatTour;
+                for (Personnage pers : this.membres) {
+                    Personnage clone_pers = (Personnage) pers.clone();
+                    clone.membres.add(clone_pers);
+                    if (pers == this.personnageActif) {
+                        clone.personnageActif = clone_pers;
+                    }
+                }
+                for (Personnage pers : this.personnagesAttaques) {
+                    clone.personnagesAttaques.add((Personnage) pers.clone());
+                }
+                return clone;
+        }
 	
 	/**
 	 * Lance l'attaque sur les Personnage cibles
@@ -98,7 +118,7 @@ public class Equipe {
 	 * Reset le Personnage attaquer
 	 */
 	public void clearPersonnagesAttaques(){
-		PersonnagesAttaques.clear();
+		personnagesAttaques.clear();
 	}
 	
 	/**
@@ -136,7 +156,7 @@ public class Equipe {
 	 * @return liste de Personnage
 	 */
 	public List<Personnage> getPersonnagesAttaques() {
-		return PersonnagesAttaques;
+		return personnagesAttaques;
 	}
 	
 	/**
@@ -144,7 +164,7 @@ public class Equipe {
 	 * @return Personnage
 	 */
 	public Personnage getPersonnageActif() {
-		return PersonnageActif;
+		return personnageActif;
 	}
 	
 	/**
@@ -185,7 +205,7 @@ public class Equipe {
 	 * @param personnageAttaque nouveau personnage attaque
 	 */
 	public void addPersonnageAttaque(Personnage personnageAttaque) {
-		this.PersonnagesAttaques.add(personnageAttaque);
+		this.personnagesAttaques.add(personnageAttaque);
 	}
 
 	/**
@@ -193,7 +213,7 @@ public class Equipe {
 	 * @param personnageActif nouveau Personnage actif
 	 */
 	public void setPersonnageActif(Personnage personnageActif) {
-		this.PersonnageActif = personnageActif;
+		this.personnageActif = personnageActif;
 	}
 	
 	/**

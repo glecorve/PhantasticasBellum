@@ -10,12 +10,31 @@ import java.util.List;
  * @author Gwenole Lecorve
  */
 public class IA extends Joueur {
+    
+    private Coup coupMemorise;
         
     /**
      * Constructeur
      */
     public IA() {
         super("IA aleatoire");
+        coupMemorise = null;
+    }
+    
+    /**
+     * Renvoie le dernier coup memorise
+     * @return un coup
+     */
+    public final Coup getCoupMemorise() {
+        return coupMemorise;
+    }
+    
+    /**
+     * Memorise un coup
+     * @param coup Le coup a memoriser
+     */
+    public final void memoriseCoup(Coup coup) {
+        coupMemorise = coup;
     }
     
     /**
