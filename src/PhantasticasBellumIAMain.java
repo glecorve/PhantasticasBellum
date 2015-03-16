@@ -4,7 +4,7 @@ import Controleur.Partie;
 import Exception.ExceptionPersonnage;
 import Exception.ExceptionParamJeu;
 import GUI.Fenetre;
-import IA.IA;
+import IA.*;
 import Model.Joueur;
 import Model.Personnage;
 import Model.Position;
@@ -13,11 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 /**
  * Classe de lancement d'une partie pour le module d'intelligence artificielle
  *
@@ -27,7 +23,6 @@ public class PhantasticasBellumIAMain {
 
     /**
      * Fixe la composition et la position de l'équipe d'un joueur
-     *
      * @param j Le joueur à initialiser
      * @param p La partie qui va être jouée
      * @param cote Côté du plateau où débutera le joueur
@@ -62,8 +57,8 @@ public class PhantasticasBellumIAMain {
     public static void main(String[] args) {
         // Initialise chaque joueur
         Joueur j1 = new Joueur("Joueur 1");
-//        Joueur j1 = new IA();
-        Joueur j2 = new IA();
+//        Joueur j1 = new IAAleatoire("Aleatoire 1");
+        Joueur j2 = new IAAleatoireAgressive("Aleatoire 2");
         
         Fenetre fenetre = new Fenetre();
         Partie maPartie = new Partie(false, j1, j2);
