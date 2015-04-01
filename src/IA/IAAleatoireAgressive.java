@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Gwenole Lecorve
  */
-public class IAAleatoireAgressive extends IA {
+public class IAAleatoireAgressive extends AbstractIA {
 
     /**
      * Constructeur par defaut
