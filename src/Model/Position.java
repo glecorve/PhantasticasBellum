@@ -38,6 +38,14 @@ public class Position {
 		Position Temp = (Position) obj;
 		return (this.getX() == Temp.getX() && this.getY() == Temp.getY());
 	}
+        
+        /**
+         * Clone la position courante
+         */
+        @Override
+        public Object clone() {
+            return new Position(this.x, this.y);
+        }
 	
 	/** 
 	 * Retourne la position x et y

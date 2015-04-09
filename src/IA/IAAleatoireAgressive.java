@@ -45,12 +45,14 @@ public class IAAleatoireAgressive extends AbstractIA {
 
     @Override
     public Coup getCoup(Partie p) {
-        System.out.println(Thread.currentThread().getName() + ": " + "-------- getCoup ---------");
+//        System.out.println(Thread.currentThread().getName() + ": " + "-------- getCoup ---------");
         List<Coup> coups = p.getTousCoups();
         List<Coup> attaques = new ArrayList();
         for (Coup c : coups) {
+            Partie cloneP = p.clone();
+            cloneP.appliquerCoup(c);
             if (contientAttaque(c)) {
-                System.out.println(Thread.currentThread().getName() + ": " + "Coup possible : " + c.toString());
+//                System.out.println(Thread.currentThread().getName() + ": " + "Coup possible : " + c.toString());
                 attaques.add(c);
             }
         }
@@ -60,7 +62,7 @@ public class IAAleatoireAgressive extends AbstractIA {
         } else {
             resultat = attaques.get((int) (Math.random() * (attaques.size() - 1)));
         }
-        System.out.println(Thread.currentThread().getName() + ": " + "Coup calcule = " + resultat.toString());
+//        System.out.println(Thread.currentThread().getName() + ": " + "Coup calcule = " + resultat.toString());
         return resultat;
     }
 

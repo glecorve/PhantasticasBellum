@@ -182,9 +182,12 @@ public class ControleurFenetre {
 	 *  Change le contenu de la fenetre vers la classe du deroulement d'un tour de jeu si le jeu n'est pas termine
 	 */
 	public void tourSuivant(){
+            boolean continuer = false;
             // Enchainer les tours tant que le joueur suivant est un joueur artificiel
             do {
-		if (getPartie().tourSuivant()) {
+                continuer = getPartie().tourSuivant();
+		if (continuer) {
+                    System.gc();
                     getVue().naviguer(new VueJeuCombat(
 						this,
 						getPartie().getPlateauHauteur(),
@@ -193,15 +196,15 @@ public class ControleurFenetre {
 						getPartie().getJoueurActuel()
 					)
 				);
+                    if (getPartie().getJoueurActuel() instanceof AbstractIA) {
+                        coupSuivant();
+                    }
                 }
                 else {
                     getVue().naviguer(new VueFinJeu(this));
                 }
                 
-                if (getPartie().getJoueurActuel() instanceof AbstractIA) {
-                    coupSuivant();
-                }
-            } while (getPartie().getJoueurActuel() instanceof AbstractIA);
+            } while (continuer && getPartie().getJoueurActuel() instanceof AbstractIA);
                 
 	}
         
@@ -240,7 +243,7 @@ public class ControleurFenetre {
                     coup = ia.getCoupMemorise();
                 }
                 else {
-                    System.out.println(Thread.currentThread().getName()+": "+"coup choisi = " + calcul.getCoupChoisi());
+//                    System.out.println(Thread.currentThread().getName()+": "+"coup choisi = " + calcul.getCoupChoisi());
                     coup = calcul.getCoupChoisi();
                 }
                 // Si aucun coup memorise, prendre un coup au hasard
@@ -250,7 +253,7 @@ public class ControleurFenetre {
                     System.out.println("Nouveau coup calcule = " + coup);
                 }
                 
-                System.out.println(Thread.currentThread().getName()+": "+"Coup choisi = "+coup.toString());
+                System.out.println("Coup choisi = "+coup.toString());
                 getPartie().appliquerCoup(coup);
                 try {
                     Thread.sleep(10);

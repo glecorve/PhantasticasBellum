@@ -94,13 +94,14 @@ public class ControleurCombat extends AbstractControleurJeu {
 
 			((VueJoueurCombat) getVue().getPanelJoueurActuel()).verouillerChoixAttaque();
 
+                        if (UNE_SEULE_ACTION_PAR_TOUR) {
+                            //empecher tout deplacement
+                            ((VueJoueurCombat) getVue().getPanelJoueurActuel()).verouillerChoixDeplacement();
+                            deplacement = false;
+                        }
+                        
 			//si attaque multiple
 			if (getAttaqueActif().isAttaqueMultiple()){
-                            if (UNE_SEULE_ACTION_PAR_TOUR) {
-                                //empecher tout deplacement
-                                ((VueJoueurCombat) getVue().getPanelJoueurActuel()).verouillerChoixDeplacement();
-                                deplacement = false;
-                            }
 				if (!coupsRestant){
 					attaque = false;
 				} else {

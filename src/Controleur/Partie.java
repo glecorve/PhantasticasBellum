@@ -5,7 +5,6 @@ import Controleur.ControleurPlacement.coteJeu;
 import Exception.ExceptionPersonnage;
 import Exception.ExceptionParamJeu;
 import GUI.Fenetre;
-import GUI.Vue4.VueFinJeu;
 
 import java.util.*;
 
@@ -263,6 +262,7 @@ public class Partie {
          * @return Vrai s'il y a un tour suivant, faux sinon (partie terminee)
          */
         public boolean tourSuivant() {
+            
             //Recupere tous les personnages qui sont encore en jeu
 		List<Personnage> tousLesPersonnages = listerEquipes();
 		boolean encoreDeuxAdversaire = false;
@@ -444,13 +444,13 @@ public class Partie {
             
 //            System.out.println(Thread.currentThread().getName()+": "+"Equipe courante = " + getJoueurActuel().getEquipe().toString());
             for (Personnage pf : getJoueurActuel().listerEquipe()) {
-                System.out.println("Coup de " + pf.toString());
+//                System.out.println("Coup de " + pf.toString());
                 if (pf.estVivant() && !pf.isDejaJoue()) {
 //                    System.out.println("OK");
                     tousCoups.addAll(getTousCoupsPersonnage(pf, casesLibres, tousPersonnages));
                 }
             }
-            System.out.println("-> " + tousCoups.size() + " coups");
+//            System.out.println("-> " + tousCoups.size() + " coups");
             return tousCoups;
         }
         

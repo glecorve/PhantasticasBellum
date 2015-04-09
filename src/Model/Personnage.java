@@ -5,6 +5,8 @@ import java.util.*;
 import javax.swing.ImageIcon;
 
 import Exception.ExceptionPersonnage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classe Personnage, represente les personnages
@@ -71,23 +73,34 @@ public abstract class Personnage extends Observable implements Cloneable{
 	public Personnage(int pm, int vie, Matrice mouvement, String classe, creatureType type){
 		this(pm, vie, mouvement, classe, type, "/images/large_DefaultPersonnage.png", "/images/small_DefaultPersonnage.png");
 	}
+        
+        @Override
+        public abstract Object clone();
 		
-	public Object clone(){
-		Personnage personnage = null;
-		try{
-			personnage = (Personnage) super.clone();
-		} catch (CloneNotSupportedException cnse){
-			cnse.printStackTrace(System.err);
-		}
+        /**
+         * Copie un personnage
+         * @param perso le personnage a copier
+         */
+	public void copier(Personnage perso){
+		this.pm = perso.pm;
+		this.vie = perso.vie;
+                this.maxVie = perso.vie;
+		this.mouvement = perso.mouvement;
+		this.classe = perso.classe;
+                this.nom = perso.nom;
+		this.image = perso.image;
+                this.vignette = perso.vignette;
+		this.attaque = perso.attaque;
+		this.dejaJoue = perso.dejaJoue;
+                this.position = (Position) perso.position.clone();
+		this.type = perso.type;
+                
 		//Clone les dependances (objets) non immuables (types primitifs non inclus)
 		//Les attaques sont identiques pour tous les Personnage, pas de clonnage
 		//Clonnage des effets
-		List<Effet> listeEffetClone = new ArrayList<Effet>();
-		for(Effet o : getEffet()) listeEffetClone.add((Effet) o.clone());
-		personnage.setEffet(listeEffetClone);
-                personnage.setNom(this.getNom());
-		
-		return personnage;
+		List<Effet> listeEffetClone = new ArrayList();
+		for(Effet e : perso.getEffet()) listeEffetClone.add((Effet) e.clone());
+		this.setEffet(listeEffetClone);
 	}
 	
 	/**
