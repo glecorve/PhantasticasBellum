@@ -158,7 +158,7 @@ public class Matrice {
 	 * @param maPosition position courante
 	 * @return collection de position de case
 	 */
-	public List<Position> getCasesAccessible(Position maPosition){
+	public List<Position> getCasesAccessibles(Position maPosition){
 		List<Position> caseAccessible = new ArrayList<Position>();
 		
 		int ligneOffset = (getLigne() - 1) / 2;

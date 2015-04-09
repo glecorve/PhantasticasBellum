@@ -5,6 +5,7 @@ import Controleur.ControleurPlacement.coteJeu;
 import Exception.ExceptionPersonnage;
 import Exception.ExceptionParamJeu;
 import GUI.Fenetre;
+import GUI.Vue4.VueFinJeu;
 
 import java.util.*;
 
@@ -256,6 +257,72 @@ public class Partie {
 			setJoueurActuel(getJoueurIterateur().next());
 		}
 	}
+        
+        /**
+         * Passe au tour suivant
+         * @return Vrai s'il y a un tour suivant, faux sinon (partie terminee)
+         */
+        public boolean tourSuivant() {
+            //Recupere tous les personnages qui sont encore en jeu
+		List<Personnage> tousLesPersonnages = listerEquipes();
+		boolean encoreDeuxAdversaire = false;
+		//On regarde si il y a un personnage qui a un joueur different du premier personnage
+		if (tousLesPersonnages.isEmpty()){
+			encoreDeuxAdversaire = false;
+		}else{
+			//Si les deux joueurs sont encore sur le plateau
+			for (Personnage o : tousLesPersonnages){
+				if(o.getProprio() != tousLesPersonnages.get(0).getProprio()){
+					encoreDeuxAdversaire = true;
+					break;
+				}
+			}
+		}
+		
+		//Test si il n'y a plus qu'un joueur
+		if(!encoreDeuxAdversaire){
+			//Si il y a un gagnant, alors on le notify
+			if (!tousLesPersonnages.isEmpty()){
+				signifierVictoire(tousLesPersonnages.get(0).getProprio());
+			}
+                        //Si il n'y a plus deux adversaire alors on fini le jeu
+			return false;
+		}
+
+		//Joueur suivant
+		joueurSuivant();
+		
+		//Recherche un personnage du joueur actuel qui n'a pas deja joue
+		boolean tousPersonnagesjoueurOntJoue = true;
+		for(Personnage o : listerEquipeJoueur()){
+			if (!o.isDejaJoue()){
+				tousPersonnagesjoueurOntJoue = false;
+				break;
+			}
+		}
+		//Si la totalite des personnages du joueur actuel a joue
+		if (tousPersonnagesjoueurOntJoue){
+			//Si tous les personnages du jeu ont joue
+			boolean tousPFontJoue = true;
+			for(Personnage o : tousLesPersonnages){
+				if (!o.isDejaJoue()){
+					tousPFontJoue = false;
+					break;
+				}
+			}
+			//Si tous les personnages du plateau ont joue
+			if (tousPFontJoue){
+				//remise a zero de l'etat aJoue de chaque personnage
+				for(Personnage o : tousLesPersonnages){
+					o.setDejaJoue(false);
+				}
+			} else {
+				//Le tour de jeu repasse au meme joueur
+				joueurSuivant();
+			}
+		}
+                return true;
+        }
 	
 	public boolean isDeplacementEnCours(){
 		return getJoueurActuel().IsdeplacementEnCours();
@@ -366,14 +433,24 @@ public class Partie {
          */
         public synchronized List<Coup> getTousCoups() {
             List<Coup> tousCoups = new ArrayList();
+            
+            // Calculer toutes les cases libres
+            List<Position> casesLibres = getToutesPositions();
+            for (Personnage perso : listerEquipes()) {
+                casesLibres.remove(perso.getPosition());
+            }
+            
+            List<Personnage> tousPersonnages = listerEquipes();
+            
 //            System.out.println(Thread.currentThread().getName()+": "+"Equipe courante = " + getJoueurActuel().getEquipe().toString());
             for (Personnage pf : getJoueurActuel().listerEquipe()) {
-//                System.out.println("Coup de " + pf.toString());
+                System.out.println("Coup de " + pf.toString());
                 if (pf.estVivant() && !pf.isDejaJoue()) {
 //                    System.out.println("OK");
-                    tousCoups.addAll(getTousCoupsPersonnage(pf));
+                    tousCoups.addAll(getTousCoupsPersonnage(pf, casesLibres, tousPersonnages));
                 }
             }
+            System.out.println("-> " + tousCoups.size() + " coups");
             return tousCoups;
         }
         
@@ -383,32 +460,84 @@ public class Partie {
          * @return une liste de coups
          */
         public List<Coup> getTousCoupsPersonnage(Personnage pf) {
+            // Calculer toutes les cases libres
+            List<Position> casesLibres = getToutesPositions();
+            for (Personnage perso : listerEquipes()) {
+                casesLibres.remove(perso.getPosition());
+            }
+            
+            return getTousCoupsPersonnage(pf, casesLibres, listerEquipes());
+        }
+        
+        /**
+         * Retourne la liste des coups possibles par un Personnage
+         * @param pf le Personnage
+         * @param casesLibres Liste des cases libres
+         * @param tousPersonnages Liste des personnages sur le plateau
+         * @return une liste de coups
+         */
+        protected List<Coup> getTousCoupsPersonnage(Personnage pf, List<Position> casesLibres, List<Personnage> tousPersonnages) {
             List<Coup> coups = new ArrayList();
             // Coup nul
             coups.add(new Coup(pf, new ArrayList()));
             
             // Deplacements seuls
             List<Deplacement> deplacementsTheoriques = pf.getDeplacements();
-            List<Deplacement> deplacementsVerifies = new ArrayList();
             for (Deplacement d : deplacementsTheoriques) {
 //                System.out.println("Déplacement theorique = " + d.toString());
 //                System.out.println("-> " + (isCaseValide(d.getDestination())?"valide":"pas valide") + " && " + (isCaseLibre(d.getDestination())?"libre":"pas libre"));
-                if (isCaseValide(d.getDestination()) && isCaseLibre(d.getDestination())) {
-                    deplacementsVerifies.add(d);
+                if (isCaseValide(d.getDestination()) && casesLibres.contains(d.getDestination())) {
                     coups.add(new Coup(pf, d));
                 }
             }
             
             // Attaques seules
+//            System.out.println("Personnage = " + pf.getClasse() + " " + pf.getNom());
             for (Sort sort : pf.getAttaques()) {
-                List<Position> cibles = sort.getZone().getCasesAccessible(pf.getPosition());
-                for (Personnage cible : listerEquipes()) {
-                    if (cibles.contains(cible.getPosition())) {
-                        coups.add(new Coup(pf, new Attaque(sort, cible)));
+                
+//                System.out.println("Sort = " + sort.getNom());
+                // Tester si chaque personnage est atteignable
+                for (Personnage cible : tousPersonnages) {
+                    
+//                    System.out.println("Cible = " + cible.getClasse() + " " + cible.getNom());
+                    // Si le personnage est atteignable
+                    if (sort.peutAtteindre(pf.getPosition(), cible.getPosition())) {
+//                        System.out.println("Atteignable");
+                        // Construire la liste des cases ciblees avec le personnage cible comme centre
+                        List<Position> casesCiblees = sort.getZone().getCasesAccessibles(cible.getPosition());
+                        casesCiblees.removeAll(casesLibres);
+                        
+//                        for (Position p : casesCiblees) {
+//                            System.out.println("Case ciblee = " + p.toString());
+//                        }
+                        
+                        // Chercher les personnages sur ces cases
+                        List<Personnage> cibles = new ArrayList();
+                        cibles.add(cible);
+                        
+                        for (Personnage cibleCollaterale : tousPersonnages) {
+                            if (cibleCollaterale != cible) {
+//                                System.out.println("Cible collaterale = " + cibleCollaterale.getClasse() + " " + cibleCollaterale.getNom());
+                                if (casesCiblees.contains(cibleCollaterale.getPosition())) {
+//                                    System.out.println("Atteignable");
+                                    cibles.add(cibleCollaterale);
+                                }
+//                                else {
+//                                    System.out.println("Pas atteignable");
+//                                }
+                            }
+                        }
+                        
+                        // Construire le coup correcpondant
+                        coups.add(new Coup(pf, new Attaque(sort, cibles)));
+//                        System.out.println("Ajout de " + new Coup(pf, new Attaque(sort, cibles)));
+
                     }
+//                    else {
+//                        System.out.println("Pas atteignable");
+//                    }
                 }
             }
-            
             return coups;
         }
         

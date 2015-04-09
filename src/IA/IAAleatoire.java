@@ -42,6 +42,7 @@ public class IAAleatoire extends AbstractIA {
         }
         Coup resultat = coups.get((int) (Math.random() * (coups.size() - 1)));
         System.out.println(Thread.currentThread().getName()+": "+"Coup calcule = " + resultat.toString());
+//        System.exit(0);
         return resultat;
     }
 

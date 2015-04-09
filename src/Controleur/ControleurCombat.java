@@ -225,7 +225,7 @@ public class ControleurCombat extends AbstractControleurJeu {
 		}
 		
 		//Recuperer les positions des cases cible
-		List<Position> caseAccessible = mouvementPersonnage.getCasesAccessible(positionPersonnage);
+		List<Position> caseAccessible = mouvementPersonnage.getCasesAccessibles(positionPersonnage);
 
 		List<Position> caseAccessibleDispo = new ArrayList();
                 List<Position> caseInaccessibleDispo = getPartie().getToutesPositions();
@@ -264,7 +264,7 @@ public class ControleurCombat extends AbstractControleurJeu {
 		if (porteeMax != - 1){
 			Matrice porteePersonnage = new Matrice(porteeMin, porteeMax, false);
 			
-			List<Position> caseAccessible = porteePersonnage.getCasesAccessible(positionPersonnage);
+			List<Position> caseAccessible = porteePersonnage.getCasesAccessibles(positionPersonnage);
                         List<Position> caseInaccessible = getPartie().getToutesPositions();
                         caseInaccessible.removeAll(caseAccessible);
 
@@ -318,7 +318,7 @@ public class ControleurCombat extends AbstractControleurJeu {
 		Sort oA = getPartie().getAttaqueActif();
 		Matrice attaquePersonnage = oA.getZone();
 		
-		List<Position> caseAccessible = attaquePersonnage.getCasesAccessible(positionCase);
+		List<Position> caseAccessible = attaquePersonnage.getCasesAccessibles(positionCase);
 		
 		return caseAccessible;
 	}

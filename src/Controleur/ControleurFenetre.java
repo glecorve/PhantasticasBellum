@@ -184,67 +184,8 @@ public class ControleurFenetre {
 	public void tourSuivant(){
             // Enchainer les tours tant que le joueur suivant est un joueur artificiel
             do {
-		//Recupere tous les personnages qui sont encore en jeu
-		List<Personnage> tousLesPersonnages = getPartie().listerEquipes();
-		boolean encoreDeuxAdversaire = false;
-		//On regarde si il y a un personnage qui a un joueur different du premier personnage
-		if (getPartie().listerEquipes().isEmpty()){
-			encoreDeuxAdversaire = false;
-		}else{
-			//Si les deux joueurs sont encore sur le plateau
-			for (Personnage o : getPartie().listerEquipes()){
-				if(o.getProprio() != tousLesPersonnages.get(0).getProprio()){
-					encoreDeuxAdversaire = true;
-					break;
-				}
-			}
-		}
-		
-		//Test si il n'y a plus qu'un joueur
-		if(!encoreDeuxAdversaire){
-			//Si il y a un gagnant, alors on le notify
-			if(getPartie().listerEquipes().isEmpty() == false){
-				getPartie().signifierVictoire(tousLesPersonnages.get(0).getProprio());
-			}
-			//Si il n'y a plus deux adversaire alors on fini le jeu
-			getVue().naviguer(new VueFinJeu(this));
-			return;
-		}
-
-		//Joueur suivant
-		getPartie().joueurSuivant();
-		
-		//Recherche un Personnage du joueur actuel qui n'a pas deja joue
-		boolean tousPersonnagesjoueurOntJoue = true;
-		for(Personnage o : getPartie().listerEquipeJoueur()){
-			if (!o.isDejaJoue()){
-				tousPersonnagesjoueurOntJoue = false;
-				break;
-			}
-		}
-		//Si la totalite des personnages du joueur actuel ont joue
-		if (tousPersonnagesjoueurOntJoue){
-			//Si tous les personnages du jeu ont joue
-			boolean tousPFontJoue = true;
-			for(Personnage o : tousLesPersonnages){
-				if (!o.isDejaJoue()){
-					tousPFontJoue = false;
-					break;
-				}
-			}
-			//Si tous les personnages du plateau ont joue
-			if (tousPFontJoue){
-				//remise a zero de l'etat aJoue de chaque personnage
-				for(Personnage o : tousLesPersonnages){
-					o.setDejaJoue(false);
-				}
-			} else {
-				//Le tour de jeu repasse au meme joueur
-				getPartie().joueurSuivant();
-			}
-		}
-		
-		getVue().naviguer(new VueJeuCombat(
+		if (getPartie().tourSuivant()) {
+                    getVue().naviguer(new VueJeuCombat(
 						this,
 						getPartie().getPlateauHauteur(),
 						getPartie().getPlateauLargeur(),
@@ -252,6 +193,10 @@ public class ControleurFenetre {
 						getPartie().getJoueurActuel()
 					)
 				);
+                }
+                else {
+                    getVue().naviguer(new VueFinJeu(this));
+                }
                 
                 if (getPartie().getJoueurActuel() instanceof AbstractIA) {
                     coupSuivant();

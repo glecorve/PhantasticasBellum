@@ -257,7 +257,7 @@ public abstract class Personnage extends Observable implements Cloneable{
          */
         public List<Deplacement> getDeplacements() {
                 List<Deplacement> l = new ArrayList();
-                for (Position destination : getMouvement().getCasesAccessible(position)) {
+                for (Position destination : getMouvement().getCasesAccessibles(position)) {
                     l.add(new Deplacement(position, destination));
                 }
                 return l;
