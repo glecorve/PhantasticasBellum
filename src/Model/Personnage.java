@@ -5,8 +5,6 @@ import java.util.*;
 import javax.swing.ImageIcon;
 
 import Exception.ExceptionPersonnage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Classe Personnage, represente les personnages
@@ -84,7 +82,7 @@ public abstract class Personnage extends Observable implements Cloneable{
 	public void copier(Personnage perso){
 		this.pm = perso.pm;
 		this.vie = perso.vie;
-                this.maxVie = perso.vie;
+                this.maxVie = perso.maxVie;
 		this.mouvement = perso.mouvement;
 		this.classe = perso.classe;
                 this.nom = perso.nom;
@@ -101,6 +99,29 @@ public abstract class Personnage extends Observable implements Cloneable{
 		List<Effet> listeEffetClone = new ArrayList();
 		for(Effet e : perso.getEffet()) listeEffetClone.add((Effet) e.clone());
 		this.setEffet(listeEffetClone);
+	}
+        
+        /**
+	 * Teste l'égalité entre deux personnages
+         * @return Vrai si les personnages sont équivalents
+	 */
+	public boolean equals(Object obj){
+		if (obj == this){
+			return true;
+		}
+		if (!(obj instanceof Personnage)){
+			return false;
+		}
+		Personnage perso = (Personnage) obj;
+		return (this.pm == perso.pm
+                    &&  this.vie == perso.vie
+                    &&  this.maxVie == perso.maxVie
+                    &&  this.mouvement.equals(perso.mouvement)
+                    &&  this.classe.equals(perso.classe)
+                    &&  this.nom.equals(perso.nom)
+                    &&  this.dejaJoue == perso.dejaJoue
+                    &&  this.position.equals(perso.position)
+                    &&  this.type  == perso.type);
 	}
 	
 	/**
@@ -283,6 +304,31 @@ public abstract class Personnage extends Observable implements Cloneable{
 	public List<Effet> getEffet() {
 		return effet;
 	}
+        
+        /**
+         * Teste si le personnage courant est actuellement ralenti
+         * @return Vrai si le personnage est ralenti, faux sinon
+         */
+        public boolean isRalenti() {
+            for (Effet e : effet) {
+                if (e.getPmRetirer() > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /**
+         * Renvoie la valeur du bouclier du personnage courant
+         * @return un entier positif ou nul si aucun bouclier
+         */
+        public int getBouclier() {
+            int bouclier = 0;
+            for (Effet e : effet) {
+                bouclier += e.getBouclier();
+            }
+            return bouclier;
+        }
 
 	/**
 	 * Getter de dejaJoueur

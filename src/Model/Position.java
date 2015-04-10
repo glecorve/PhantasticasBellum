@@ -26,7 +26,7 @@ public class Position {
 	}
 
 	/**
-	 * Test l'égalité entre deux instances de la classe Position
+	 * Teste l'égalité entre deux instances de la classe Position
 	 */
 	public boolean equals(Object obj){
 		if (obj == this){

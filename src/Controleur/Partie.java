@@ -362,8 +362,17 @@ public class Partie {
          * @param coup Le coup a appliquer
          */
         public void appliquerCoup(Coup coup) {
+            // Chercher l'auteur dans la partie courante (car eventuellement un clone de partie)
+            Personnage auteur = null;
+
+            for (Personnage perso : listerEquipes()) {
+                if (perso.equals(coup.getAuteur())) {
+                    auteur = perso;
+                }
+            }
+            
             //Selectionner le personnage qui joue le coup
-            setPersonnageActif(coup.getAuteur());
+            setPersonnageActif(auteur);
             
             //Appliquer toutes les actions du coup
             for (Action a : coup.getActions()) {

@@ -77,7 +77,12 @@ public class Attaque implements Action {
     @Override
     public void appliquer(Partie partie) {
         for (Personnage cible : cibles) {
-            cible.appliquerSort(getSort());
+            // Chercher la cible dans la partie (car eventuellement un clone de la partie)
+            for (Personnage perso : partie.listerEquipes()) {
+                if (cible.equals(perso)) {
+                    perso.appliquerSort(getSort());
+                }
+            }
         }
     }
 }

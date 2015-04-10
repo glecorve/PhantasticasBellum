@@ -70,14 +70,15 @@ public class ControleurCombat extends AbstractControleurJeu {
                                     ((VueJoueurCombat) getVue().getPanelJoueurActuel()).verouillerChoixAttaque();
                                     attaque = false;
                                 }
-			}
-			
+			}			
 			
 			//empecher le choix d'un autre deplacement
 			((VueJoueurCombat) getVue().getPanelJoueurActuel()).verouillerChoixDeplacement();
 			
 			//Reset couleur plateau
 			getVue().getPanelPlateau().afficherPlateauParDefaut();
+                        
+                        majConsole(getPartie().getPersonnageActif() + " se déplace en " + maPosition + ".");
 			
 		} else if (getPartie().isAttaqueEnCours() && attaque){
 			//Sinon si attaque alors on attaque la case
@@ -116,13 +117,13 @@ public class ControleurCombat extends AbstractControleurJeu {
 			
 			//Met a jour la console
 			if (resultatAttaque.isEmpty()){
-				majConsole(new JLabel("Attaque sans effet sur les personnages."));
+				majConsole("Attaque sans effet sur les personnages.");
 			}else{
 				for (String o : resultatAttaque){
 					if (attaque){
 						o += " 1 attaque restante.";
 					}
-					majConsole(new JLabel(o));
+					majConsole(o);
 				}
 			}
 		} else {
@@ -164,10 +165,10 @@ public class ControleurCombat extends AbstractControleurJeu {
 
 	/**
 	 * Affiche le label en parametre dans le panel sud
-	 * @param monLabel element a afficher
+	 * @param texte Texte a afficher
 	 */
-	public void majConsole(JLabel monLabel){
-		getVue().majConsole(monLabel);
+	public void majConsole(String texte){
+		getVue().majConsole(texte);
 	}
 	
 	/**
@@ -193,6 +194,10 @@ public class ControleurCombat extends AbstractControleurJeu {
 		
 		//Fixe l'etat passif
 		getPartie().setEtatTourPasser();
+                
+                if (attaque && deplacement) {
+                    majConsole(getPartie().getPersonnageActif() + " passe son tour.");
+                }
 		
 		//Passe au tour suivant
 		getControleurParent().tourSuivant();
