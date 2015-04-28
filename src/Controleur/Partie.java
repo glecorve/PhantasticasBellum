@@ -5,6 +5,7 @@ import Controleur.ControleurPlacement.coteJeu;
 import Exception.ExceptionPersonnage;
 import Exception.ExceptionParamJeu;
 import GUI.Fenetre;
+import GUI.Vue3.Plateau.CasePlateau;
 
 import java.util.*;
 
@@ -90,22 +91,19 @@ public class Partie {
          * @return une nouvelle partie
          */
         public Partie clone() {
-            Partie clone = new Partie(false, null, null);
+            Partie clone = new Partie(false, this.joueurs.get(0).clone(), this.joueurs.get(1).clone());
             
             clone.tailleEquipe = this.tailleEquipe;
             clone.plateauHauteur = this.plateauHauteur;
             clone.plateauLargeur = this.plateauLargeur;
                     
-            int n = joueurs.size();
             boolean found_current_player = false;
             clone.joueurIterateur = clone.joueurs.iterator();
 
-            for (int i = 0; i < Math.min(n, 2); i++) {
-                Joueur j_clone = (Joueur) this.joueurs.get(i).clone();
-                clone.joueurs.set(i, j_clone);
+            for (int i = 0; i < 2; i++) {
                 // Verifier si on est sur le joueur courant
-                if (joueurActuel == this.joueurs.get(i)) {
-                    clone.joueurActuel = j_clone;
+                if (this.joueurActuel == this.joueurs.get(i)) {
+                    clone.joueurActuel = clone.joueurs.get(i);
                     found_current_player = true;
                 }
                 // Avancer l'iterateur si le joueur courant n'a pas encore ete atteint
@@ -370,7 +368,7 @@ public class Partie {
                     auteur = perso;
                 }
             }
-            
+
             //Selectionner le personnage qui joue le coup
             setPersonnageActif(auteur);
             
@@ -509,45 +507,70 @@ public class Partie {
                 for (Personnage cible : tousPersonnages) {
                     
 //                    System.out.println("Cible = " + cible.getClasse() + " " + cible.getNom());
-                    // Si le personnage est atteignable
-                    if (sort.peutAtteindre(pf.getPosition(), cible.getPosition())) {
-//                        System.out.println("Atteignable");
-                        // Construire la liste des cases ciblees avec le personnage cible comme centre
-                        List<Position> casesCiblees = sort.getZone().getCasesAccessibles(cible.getPosition());
-                        casesCiblees.removeAll(casesLibres);
-                        
-//                        for (Position p : casesCiblees) {
-//                            System.out.println("Case ciblee = " + p.toString());
-//                        }
-                        
-                        // Chercher les personnages sur ces cases
-                        List<Personnage> cibles = new ArrayList();
-                        cibles.add(cible);
-                        
-                        for (Personnage cibleCollaterale : tousPersonnages) {
-                            if (cibleCollaterale != cible) {
-//                                System.out.println("Cible collaterale = " + cibleCollaterale.getClasse() + " " + cibleCollaterale.getNom());
-                                if (casesCiblees.contains(cibleCollaterale.getPosition())) {
-//                                    System.out.println("Atteignable");
-                                    cibles.add(cibleCollaterale);
-                                }
-//                                else {
-//                                    System.out.println("Pas atteignable");
-//                                }
-                            }
-                        }
-                        
-                        // Construire le coup correcpondant
-                        coups.add(new Coup(pf, new Attaque(sort, cibles)));
-//                        System.out.println("Ajout de " + new Coup(pf, new Attaque(sort, cibles)));
-
-                    }
-//                    else {
-//                        System.out.println("Pas atteignable");
-//                    }
+                    completerCoups(coups, pf, sort, cible, tousPersonnages, casesLibres, null);
                 }
             }
             return coups;
+        }
+        
+        protected void completerCoups(List<Coup> coups, Personnage pf, Sort sort, Personnage cible, List<Personnage> tousPersonnages, List<Position> casesLibres, Coup coupDeBase) {
+
+            // Si le personnage est atteignable
+            if (sort.peutAtteindre(pf.getPosition(), cible.getPosition())) {
+    //                        System.out.println("Atteignable");
+                // Construire la liste des cases ciblees avec le personnage cible comme centre
+                List<Position> casesCiblees = sort.getZone().getCasesAccessibles(cible.getPosition());
+                casesCiblees.removeAll(casesLibres);
+
+    //                        for (Position p : casesCiblees) {
+                //                            System.out.println("Case ciblee = " + p.toString());
+                //                        }
+                // Chercher les personnages sur ces cases
+                List<Personnage> cibles = new ArrayList();
+                cibles.add(cible);
+
+                for (Personnage cibleCollaterale : tousPersonnages) {
+                    if (cibleCollaterale != cible) {
+                        //                                System.out.println("Cible collaterale = " + cibleCollaterale.getClasse() + " " + cibleCollaterale.getNom());
+                        if (casesCiblees.contains(cibleCollaterale.getPosition())) {
+                            //                                    System.out.println("Atteignable");
+                            cibles.add(cibleCollaterale);
+                        }
+    //                                else {
+                        //                                    System.out.println("Pas atteignable");
+                        //                                }
+                    }
+                }
+
+                // Construire le coup correspondant
+                Coup nouveauCoup;
+                // Si aucun coup de base
+                if(coupDeBase == null) {
+                    nouveauCoup = new Coup(pf, new Attaque(sort, cibles));
+                    coups.add(nouveauCoup);
+                    if (sort.isAttaqueMultiple()) {
+                        for (Personnage nouvelleCible : tousPersonnages) {
+                            if (nouvelleCible != cible || cible.getVie() - sort.getDegat() > 0) {
+                                completerCoups(coups, pf, sort, nouvelleCible, tousPersonnages, casesLibres, nouveauCoup);
+                            }
+                        }
+                    }
+                //                        System.out.println("Ajout de " + new Coup(pf, new Attaque(sort, cibles)));
+                }
+                else {
+                    List<Action> actions = new ArrayList();
+                    for (Action action : coupDeBase.getActions()) {
+                        actions.add(action); // Pas de clone, ça devrait être bien
+                    }
+                    actions.add(new Attaque(sort, cibles));
+                    nouveauCoup = new Coup(pf, actions);
+                }
+                coups.add(nouveauCoup);
+
+            }
+//            else {
+//                System.out.println("Pas atteignable");
+//            }
         }
         
 	public List<Joueur> getJoueurs() {

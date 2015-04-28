@@ -13,6 +13,7 @@ import IA.AbstractIA;
 import IA.IAAleatoire;
 import IA.IAThread;
 import Model.*;
+import java.awt.Color;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -207,6 +208,16 @@ public class ControleurFenetre {
             } while (continuer && getPartie().getJoueurActuel() instanceof AbstractIA);
                 
 	}
+        private String getHTMLColorString(Color color) {
+            String red = Integer.toHexString(color.getRed());
+            String green = Integer.toHexString(color.getGreen());
+            String blue = Integer.toHexString(color.getBlue());
+
+            return "#" + 
+                    (red.length() == 1? "0" + red : red) +
+                    (green.length() == 1? "0" + green : green) +
+                    (blue.length() == 1? "0" + blue : blue);        
+        }
         
         /**
          * Passe au coup suivant et joue ce coup pour les joueurs artificiels
@@ -254,7 +265,15 @@ public class ControleurFenetre {
                 }
                 
                 System.out.println("Coup choisi = "+coup.toString());
+                
+                if (coup.getActions().isEmpty()) {
+                    ((VueJeuCombat) vue.getContentPane().getComponent(0)).majConsole("<b><a color='" + getHTMLColorString(getPartie().getJoueurActuel().getCouleur()) + "'>"+getPartie().getJoueurActuel().getNom() + "</a></b> passe son tour");
+                }
+                else {
+                    ((VueJeuCombat) vue.getContentPane().getComponent(0)).majConsole("<b><a color='" + getHTMLColorString(getPartie().getJoueurActuel().getCouleur()) + "'>"+getPartie().getJoueurActuel().getNom() + "</a></b> joue " + coup.toString());
+                }
                 getPartie().appliquerCoup(coup);
+                
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {

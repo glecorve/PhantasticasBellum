@@ -14,9 +14,25 @@ import Controleur.ControleurCombat;
 import GUI.Vue3.Plateau.*;
 import GUI.Vue3.Joueur.*;
 import Model.Joueur;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 import sun.security.pkcs11.wrapper.Constants;
 
 /**
@@ -134,7 +150,7 @@ public class VueJeuCombat extends VueJeu {
  * Classe qui represente la console de jeu
  */
 class ConsolePanel extends JPanel {
-    protected JTextArea textArea;
+    protected JTextPane textArea;
     protected JScrollPane scrollPane;
     ConsolePanel() {
         super();
@@ -143,13 +159,28 @@ class ConsolePanel extends JPanel {
         panel.setMaximumSize(new Dimension(400, 200));
         panel.add(new JLabel("Console de jeu :"));
         add(panel);
-        textArea = new JTextArea();
-        scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        textArea.setEditable(false);
+        
+        textArea = new JTextPane();
+        HTMLEditorKit kit = new HTMLEditorKit();
+        HTMLDocument doc = new HTMLDocument();
+        textArea.setEditorKit(kit);
+        textArea.setDocument(doc);
+        
+        DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane);
     }
 
     void add(String text) {
-        textArea.append(text + Constants.NEWLINE);
+        text = text.replaceAll("\n", "<br/>");
+        try {
+            HTMLDocument doc = (HTMLDocument) textArea.getDocument();
+            ((HTMLEditorKit) textArea.getEditorKitForContentType("text/html")).insertHTML(doc, doc.getLength(), "<br>" + text, 0, 0, null);
+        } catch (BadLocationException ex) {
+            Logger.getLogger(ConsolePanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ConsolePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

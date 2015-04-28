@@ -124,8 +124,9 @@ public class Joueur {
             if (!(obj instanceof Joueur)){
                     return false;
             }
+
             Joueur temp = (Joueur) obj;
-            return (this.getClass().equals(obj.getClass()) && this.hashCode() == temp.hashCode());
+            return (this.hashCode() == temp.hashCode());
         }
 
         @Override

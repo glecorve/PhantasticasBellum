@@ -84,9 +84,13 @@ public class Coup {
     @Override
     public String toString() {
         String str = "Coup ";
-        str += "par " + getAuteur().toString();
-        for (Action a : getActions()) {
-            str += "\t- " + a.toString() + "\n";
+        str += "par " + getAuteur().toString() + "\n";
+        for (int i = 0; i < actions.size(); i++) {
+            Action a = actions.get(i);
+            str += "\t- " + a.toString();
+            if (i <= actions.size()) {
+                str += "\n";
+            }
         }
         return str;
     }

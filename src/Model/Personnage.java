@@ -114,15 +114,15 @@ public abstract class Personnage extends Observable implements Cloneable{
 			return false;
 		}
 		Personnage perso = (Personnage) obj;
-		return (this.pm == perso.pm
-                    &&  this.vie == perso.vie
-                    &&  this.maxVie == perso.maxVie
-                    &&  this.mouvement.equals(perso.mouvement)
-                    &&  this.classe.equals(perso.classe)
+		return (this.classe.equals(perso.classe)
                     &&  this.nom.equals(perso.nom)
-                    &&  this.dejaJoue == perso.dejaJoue
-                    &&  this.position.equals(perso.position)
-                    &&  this.type  == perso.type);
+//                    &&  this.pm == perso.pm
+//                    &&  this.vie == perso.vie
+//                    &&  this.maxVie == perso.maxVie
+//                    &&  this.mouvement.equals(perso.mouvement)
+//                    &&  this.position.equals(perso.position)
+//                    &&  this.type  == perso.type
+                        );
 	}
 	
 	/**
@@ -191,10 +191,7 @@ public abstract class Personnage extends Observable implements Cloneable{
 	 * @return true si il est vivant, false sinon
 	 */
 	public boolean estVivant(){
-		if (getVie() > 0){
-			return true;
-		}
-		return false;
+		return (getVie() > 0);
 	}
 	
 	/**

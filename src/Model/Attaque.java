@@ -67,7 +67,7 @@ public class Attaque implements Action {
     
     @Override
     public String toString() {
-        String str = getSort().toString() + " sur <" + getCible().toString() + ">";
+        String str = getSort().toString() + " sur " + getCible().toString();
         for (int i = 1 ; i < cibles.size(); i++) {
             str +=  " + " + cibles.get(i).toString();
         }

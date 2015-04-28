@@ -3,8 +3,6 @@ package Controleur;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JLabel;
-
 import GUI.Vue3.VueJeu;
 import GUI.Vue3.VueJeuCombat;
 import GUI.Vue3.Joueur.VueJoueurCombat;
