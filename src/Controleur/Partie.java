@@ -18,9 +18,6 @@ import Personnages.*;
  */
 
 public class Partie {
-        /******************DELAI******************/
-    
-        private static final int DELAY = 4;
         
 	/******************ATTRIBUT******************/
         
@@ -55,6 +52,11 @@ public class Partie {
 	 */
 	private Joueur joueurActuel = null;
         
+        /**
+         * Nombre de tours joues depuis le debut de la partie courante
+         */
+        private int numeroTour;
+        
 	
 	/******************CONSTRUCTEUR******************/
 	/**
@@ -64,7 +66,7 @@ public class Partie {
 		new Fenetre(this);
 		initJoueurs();
 		initPersonnagesDisponibles();
-		
+		numeroTour = 1;
 		determinerOrdre();
 	}
         
@@ -84,6 +86,8 @@ public class Partie {
 		initPersonnagesDisponibles();
                 joueurSuivant();
                 joueurSuivant();
+                
+                numeroTour = 1;
 	}
         
         /**
@@ -96,6 +100,8 @@ public class Partie {
             clone.tailleEquipe = this.tailleEquipe;
             clone.plateauHauteur = this.plateauHauteur;
             clone.plateauLargeur = this.plateauLargeur;
+            
+            clone.numeroTour = this.numeroTour;
                     
             boolean found_current_player = false;
             clone.joueurIterateur = clone.joueurs.iterator();
@@ -141,6 +147,8 @@ public class Partie {
 		
 		//Reset le placement sur le plateau (placement)
 		ControleurPlacement.setCoteJeuChoisi(coteJeu.AUCUN);
+                
+                numeroTour = 1;
 	}
 	
 	/**
@@ -279,11 +287,7 @@ public class Partie {
 		
 		//Test si il n'y a plus qu'un joueur
 		if(!encoreDeuxAdversaire){
-			//Si il y a un gagnant, alors on le notify
-			if (!tousLesPersonnages.isEmpty()){
-				signifierVictoire(tousLesPersonnages.get(0).getProprio());
-			}
-                        //Si il n'y a plus deux adversaire alors on fini le jeu
+                        //Si il n'y a plus deux adversaire alors on finit le jeu
 			return false;
 		}
 
@@ -319,6 +323,7 @@ public class Partie {
 				joueurSuivant();
 			}
 		}
+                numeroTour++;
                 return true;
         }
 	
@@ -454,9 +459,10 @@ public class Partie {
 //                System.out.println("Coup de " + pf.toString());
                 if (pf.estVivant() && !pf.isDejaJoue()) {
 //                    System.out.println("OK");
-                    tousCoups.addAll(getTousCoupsPersonnage(pf, casesLibres, tousPersonnages));
+                    tousCoups.addAll(getTousCoupsPersonnage((Personnage) pf.clone(), casesLibres, tousPersonnages));
                 }
             }
+            
 //            System.out.println("-> " + tousCoups.size() + " coups");
             return tousCoups;
         }
@@ -600,6 +606,10 @@ public class Partie {
                 if (j.estBattu()) { return true; }
             }
             return false;
+        }
+        
+        public int getNumeroTour() {
+            return numeroTour;
         }
 	
 	/****************** SETTERS ******************/

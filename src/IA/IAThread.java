@@ -56,12 +56,12 @@ public class IAThread extends Thread {
     @Override
     public void run() {
         try {
-            coupChoisi = ia.getCoup(partie);
-            System.out.println(Thread.currentThread().getName()+": "+"Coup memorise");
+            coupChoisi = ia.getCoup(partie.clone());
+//            System.out.println(Thread.currentThread().getName()+": "+"Coup memorise");
         }
         catch (Exception ex) {
             Logger.getLogger(Partie.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(Thread.currentThread().getName()+": "+"Interrompu");
+//            System.out.println(Thread.currentThread().getName()+": "+"Interrompu");
         }
         finally {
             executor.shutdown();

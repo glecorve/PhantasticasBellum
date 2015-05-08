@@ -1,4 +1,5 @@
 package GUI.Vue3;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -9,7 +10,6 @@ import java.awt.event.ComponentEvent;
 import java.util.List;
 
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -18,7 +18,7 @@ import GUI.Vue3.Joueur.VueJoueur;
 import GUI.Vue3.Plateau.VuePlateau;
 import Model.*;
 import javax.swing.BorderFactory;
-import javax.swing.border.Border;
+import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -56,9 +56,9 @@ public abstract class VueJeu extends JPanel{
                 Joueur j1 = listJoueurs.get(0);
                 Joueur j2 = listJoueurs.get(1);
                 
-                TitledBorder bordureOuest = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(j1.getCouleur(), 2), "Joueur : " + j1.getNom());
+                TitledBorder bordureOuest = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(j1.getCouleur(), 2), j1.getNom() + " (" + j1.getVie() + " PV)");
                 bordureOuest.setTitleJustification(TitledBorder.CENTER);
-                TitledBorder bordureEst = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(j2.getCouleur(), 2), "Joueur : " + j2.getNom());
+                TitledBorder bordureEst = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(j2.getCouleur(), 2), j2.getNom() + " (" + j2.getVie() + " PV)");
                 bordureEst.setTitleJustification(TitledBorder.CENTER);
                 panelOuest.setBorder(bordureOuest);
                 panelEst.setBorder(bordureEst);
@@ -72,7 +72,7 @@ public abstract class VueJeu extends JPanel{
 		add(panelCentre, BorderLayout.CENTER);
 		add(panelEst, BorderLayout.EAST);
 		add(panelSud, BorderLayout.SOUTH);
-		
+                
 		panelCentre.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -148,12 +148,12 @@ public abstract class VueJeu extends JPanel{
 	 */
 	private void majDimension() {
 		panelOuest.setPreferredSize(new Dimension(
-				(int) (controleur.getControleurParent().getVue().getWidth() * 0.25), 
-				(int) (controleur.getControleurParent().getVue().getHeight() * 0.25))
+				(int) (controleur.getControleurParent().getVue().getWidth() * 0.22), 
+				(int) (controleur.getControleurParent().getVue().getHeight() * 0.22))
 		);
 		panelEst.setPreferredSize(new Dimension(
-				(int) (controleur.getControleurParent().getVue().getWidth() * 0.25), 
-				(int) (controleur.getControleurParent().getVue().getHeight() * 0.25))
+				(int) (controleur.getControleurParent().getVue().getWidth() * 0.22), 
+				(int) (controleur.getControleurParent().getVue().getHeight() * 0.22))
 		);
                 panelCentre.setPreferredSize(new Dimension(
 				(int) (controleur.getControleurParent().getPartie().getPlateauLargeur()*100), 

@@ -31,14 +31,11 @@ public class IAAleatoireAgressive extends AbstractIA {
     }
 
     protected boolean contientAttaque(Coup c) {
+        boolean result = true;
         for (Action a : c.getActions()) {
-            if (a instanceof Attaque) {
-                if (!((Attaque) a).getCible().getProprio().equals(this)) {
-                    return true;
-                }
-            }
+            result &= (a instanceof Attaque) && (!((Attaque) a).getCible().getProprio().equals(this));
         }
-        return false;
+        return result && !c.getActions().isEmpty();
     }
 
     @Override
@@ -64,7 +61,7 @@ public class IAAleatoireAgressive extends AbstractIA {
         } else {
             resultat = attaques.get((int) (Math.random() * (attaques.size() - 1)));
         }
-        System.out.println(Thread.currentThread().getName() + ": " + "Coup calcule = " + resultat.toString());
+//        System.out.println(Thread.currentThread().getName() + ": " + "Coup calcule = " + resultat.toString());
         return resultat;
     }
 

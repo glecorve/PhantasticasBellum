@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  * Classe controleur (principale) de la fenetre de jeu, permet de changer le contenu de la fenetre principale
@@ -187,6 +188,10 @@ public class ControleurFenetre {
             // Enchainer les tours tant que le joueur suivant est un joueur artificiel
             do {
                 continuer = getPartie().tourSuivant();
+                if (getPartie().getNumeroTour() == 100) {
+                    System.err.println(getPartie().getJoueurs().get(0).getNom() + " contre " + getPartie().getJoueurs().get(1).getNom() + " : match nul");
+                    System.exit(0);
+                }
 		if (continuer) {
                     System.gc();
                     getVue().naviguer(new VueJeuCombat(
@@ -202,12 +207,22 @@ public class ControleurFenetre {
                     }
                 }
                 else {
+                    Joueur j = getPartie().listerEquipes().get(0).getProprio();
+                    int pv = 0;
+                    for (Personnage perso : j.listerEquipe()) {
+                        pv += perso.getVie();
+                    }
+                    JOptionPane.showMessageDialog(getVue(), "<html>Victoire de <a color='" + j.getCouleurHTML() + "'>" + j.getNom() + "</a> ! Félicitations !<br>Points de vie restants : " + pv + ".</html>");
+//                    System.err.println(getPartie().getJoueurs().get(0).getNom() + " contre " + getPartie().getJoueurs().get(1).getNom() + " : victoire de " + j.getNom() + " (" + pv + " PV restants)");
+                    getPartie().signifierVictoire(getPartie().listerEquipes().get(0).getProprio());
                     getVue().naviguer(new VueFinJeu(this));
+                    System.exit(0);
                 }
                 
             } while (continuer && getPartie().getJoueurActuel() instanceof AbstractIA);
                 
 	}
+        
         private String getHTMLColorString(Color color) {
             String red = Integer.toHexString(color.getRed());
             String green = Integer.toHexString(color.getGreen());
@@ -219,67 +234,117 @@ public class ControleurFenetre {
                     (blue.length() == 1? "0" + blue : blue);        
         }
         
+        private boolean coupValide(Joueur joueur, Coup coup) {
+            if (coup == null) { System.out.println("Coup nul"); return false; }
+            
+            Personnage auteur = null;
+
+            for (Personnage perso : getPartie().getJoueurActuel().listerEquipe()) {
+                if (perso.equals(coup.getAuteur())) {
+                    auteur = perso;
+                }
+            }
+            if (auteur == null || auteur.getProprio() == null) { System.out.println("Auteur ou proprio nul");return false; }
+            if (!auteur.getProprio().equals(joueur)) { System.out.println("Auteur != joueur"); return false; }
+            if (auteur.isDejaJoue()) { System.out.println("Perso a déjà joué"); return false; }
+            for (Action a : coup.getActions()) {
+                if (a instanceof Deplacement && !getPartie().isCaseLibre(((Deplacement) a).getDestination())) {
+                    System.out.println("Déplacement interdit");
+                    return false;
+                }
+            }
+            return true;
+        }
+        
         /**
          * Passe au coup suivant et joue ce coup pour les joueurs artificiels
          */
         public synchronized void coupSuivant() {
             if (getPartie().getJoueurActuel() instanceof AbstractIA) {
-                System.out.println(Thread.currentThread().getName()+": "+"==========================================================================");
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                AbstractIA ia = (AbstractIA) getPartie().getJoueurActuel();
-                IAThread calcul = new IAThread(ia, getPartie(), executor);
-                executor.execute(calcul);
-                try {
-                    if (!executor.awaitTermination(AbstractIA.DELAI_DE_REFLEXION, TimeUnit.MILLISECONDS))
-                    {
-                        // Forcer la fin du thread du joueur artificiel
-                        System.out.println(Thread.currentThread().getName()+": "+"Forcer l'interruption");
-                        executor.shutdownNow();
-                        System.out.println(Thread.currentThread().getName()+": "+"est interrompu ? = " + (calcul.isInterrupted()?"oui":"non"));
+                synchronized(getPartie()) {
+                    System.out.println(Thread.currentThread().getName()+": "+"================================[ " + getPartie().getJoueurActuel().getClass().toString() + " " + getPartie().getJoueurActuel().getNom() + " ]==========================================");
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    AbstractIA ia = (AbstractIA) getPartie().getJoueurActuel();
+                    IAThread calcul = new IAThread(ia, getPartie(), executor);
+                    executor.execute(calcul);
+                    try {
+    //                    System.out.println("Top");
+                        if (!executor.awaitTermination(AbstractIA.DELAI_DE_REFLEXION, TimeUnit.MILLISECONDS))
+                        {
+                            // Forcer la fin du thread du joueur artificiel
+    //                        System.out.println(Thread.currentThread().getName()+": "+"Forcer l'interruption");
+                            executor.shutdownNow();
+    //                        System.out.println(Thread.currentThread().getName()+": "+"est interrompu ? = " + (calcul.isInterrupted()?"oui":"non"));
+                        }
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Partie.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Partie.class.getName()).log(Level.SEVERE, null, ex);
+    //                System.out.println("Stop");
+                    try {
+                        calcul.join();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ControleurFenetre.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    while (calcul.isAlive()) {
+    //                    calcul.stop();
+                    }
+                    System.gc();
+                    Coup coup;
+                    // Si aucun coup n'a ete retourne, prendre le dernier coup memorise
+                    if (calcul.getCoupChoisi() == null) {
+    //                    System.out.println(Thread.currentThread().getName()+": "+"Aucun coup choisi");
+                        coup = ia.getCoupMemorise();
+                    }
+                    else {
+    //                    System.out.println(Thread.currentThread().getName()+": "+"coup choisi = " + calcul.getCoupChoisi());
+                        coup = calcul.getCoupChoisi();
+                    }
+                    // Si aucun coup memorise, prendre un coup au hasard
+                    while (!coupValide(ia, coup)) {
+                        System.out.println(Thread.currentThread().getName()+": "+"Aucun coup memorise");
+                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        System.out.println("!!!!!!!!!!!!!!!! HASARD !!!!!!!!!!!!!!!!");
+                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        coup = (new IAAleatoire()).getCoup(getPartie());
+    //                    System.out.println("Nouveau coup calcule = " + coup);
+                    }
+
+                    System.out.println("Coup choisi = "+coup.toString());
+
+                    try {
+                        getPartie().appliquerCoup(coup);
+                    }
+                    catch (NullPointerException e) {
+                        coup = (new IAAleatoire()).getCoup(getPartie());
+                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        System.out.println("!!!!!!!!!!!!!!!! HASARD !!!!!!!!!!!!!!!!");
+                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        getPartie().appliquerCoup(coup);
+                    }
+                    finally  {
+                        if (coup.getActions().isEmpty()) {
+                           ((VueJeuCombat) vue.getContentPane().getComponent(0)).majConsole(getPartie().getNumeroTour(), ia, coup.getAuteur().toString() + " passe son tour");
+                    }
+                        else {
+                            ((VueJeuCombat) vue.getContentPane().getComponent(0)).majConsole(getPartie().getNumeroTour(), ia, coup.toString());
+                        }
+                    }
+
+
+                    getVue().revalidate();
+                    try {
+                        Thread.sleep(10);
+//                        Thread.sleep(400);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ControleurCombat.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    System.out.println("Fin de tour");
+                    for (Joueur j : getPartie().getJoueurs()) {
+                        System.out.println(j.toString());
+                    }
                 }
-                try {
-                    calcul.join();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ControleurFenetre.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-//                while (calcul.isAlive()) {}
-                Coup coup;
-                // Si aucun coup n'a ete retourne, prendre le dernier coup memorise
-                if (calcul.getCoupChoisi() == null) {
-                    System.out.println(Thread.currentThread().getName()+": "+"Aucun coup choisi");
-                    coup = ia.getCoupMemorise();
-                }
-                else {
-//                    System.out.println(Thread.currentThread().getName()+": "+"coup choisi = " + calcul.getCoupChoisi());
-                    coup = calcul.getCoupChoisi();
-                }
-                // Si aucun coup memorise, prendre un coup au hasard
-                while (coup == null) {
-                    System.out.println(Thread.currentThread().getName()+": "+"Aucun coup memorise");
-                    coup = (new IAAleatoire()).getCoup(getPartie());
-                    System.out.println("Nouveau coup calcule = " + coup);
-                }
-                
-                System.out.println("Coup choisi = "+coup.toString());
-                
-                if (coup.getActions().isEmpty()) {
-                    ((VueJeuCombat) vue.getContentPane().getComponent(0)).majConsole("<b><a color='" + getHTMLColorString(getPartie().getJoueurActuel().getCouleur()) + "'>"+getPartie().getJoueurActuel().getNom() + "</a></b> passe son tour");
-                }
-                else {
-                    ((VueJeuCombat) vue.getContentPane().getComponent(0)).majConsole("<b><a color='" + getHTMLColorString(getPartie().getJoueurActuel().getCouleur()) + "'>"+getPartie().getJoueurActuel().getNom() + "</a></b> joue " + coup.toString());
-                }
-                getPartie().appliquerCoup(coup);
-                
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ControleurCombat.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                getVue().revalidate();
             }
         }
 	

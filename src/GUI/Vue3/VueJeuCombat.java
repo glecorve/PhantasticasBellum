@@ -14,26 +14,17 @@ import Controleur.ControleurCombat;
 import GUI.Vue3.Plateau.*;
 import GUI.Vue3.Joueur.*;
 import Model.Joueur;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
-import sun.security.pkcs11.wrapper.Constants;
 
 /**
  * 
@@ -90,6 +81,27 @@ public class VueJeuCombat extends VueJeu {
 	 */
 	public void majConsole(String texte){
 		console.add(texte);
+		getPanelSud().revalidate();
+	}
+        
+        /**
+	 * Ajoute du texte dans la console de jeu
+	 * @param texte Texte a afficher
+         * @param joueur Joueur concerne par le texte
+	 */
+	public void majConsole(Joueur joueur, String texte){
+		console.add(joueur, texte);
+		getPanelSud().revalidate();
+	}
+        
+        /**
+	 * Ajoute du texte dans la console de jeu
+         * @param numeroTour Numero du tour de jeu
+	 * @param texte Texte a afficher
+         * @param joueur Joueur concerne par le texte
+	 */
+	public void majConsole(int numeroTour, Joueur joueur, String texte){
+		console.add(numeroTour, joueur, texte);
 		getPanelSud().revalidate();
 	}
 	
@@ -165,12 +177,18 @@ class ConsolePanel extends JPanel {
         HTMLDocument doc = new HTMLDocument();
         textArea.setEditorKit(kit);
         textArea.setDocument(doc);
+        Font font = new Font("Sans", Font.PLAIN, 14);
+        String bodyRule = "body { font-family: " + font.getFamily() + "; " +
+            "font-size: " + font.getSize() + "pt; }";
+        ((HTMLDocument)textArea.getDocument()).getStyleSheet().addRule(bodyRule);
         
         DefaultCaret caret = (DefaultCaret)textArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane);
     }
+    
+    
 
     void add(String text) {
         text = text.replaceAll("\n", "<br/>");
@@ -182,5 +200,17 @@ class ConsolePanel extends JPanel {
         } catch (IOException ex) {
             Logger.getLogger(ConsolePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    void add(Joueur joueur, String text) {
+        text = text.replaceAll("\n", "<br/>");
+        text = "<b><a color='" + joueur.getCouleurHTML() + "'>"+joueur.getNom() + "</a></b> : " + text;
+        add(text);
+    }
+    
+    void add(int numeroTour, Joueur joueur, String text) {
+        text = text.replaceAll("\n", "<br/>");
+        text = "<u>" + numeroTour + " :</u> <b><a color='" + joueur.getCouleurHTML() + "'>"+joueur.getNom() + "</a></b> : " + text;
+        add(text);
     }
 }

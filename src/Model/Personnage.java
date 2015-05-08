@@ -362,10 +362,17 @@ public abstract class Personnage extends Observable implements Cloneable{
         
         @Override
         public String toString() {
-            return getClasse() + " " + getNom()
+            String str = getClasse() + " " + getNom()
                     + " [" + getVie() + "/" + getMaxVie() + "]"
-                    + " (x,y) = (" + getPosition().toString() + ")"
-                    + " (" + (dejaJoue?"deja joue":"pas encore joue") + ")";
+                    + " (x,y) = (" + getPosition().toString() + ")";
+            if (estVivant()) {
+                    str += " (" + (dejaJoue?"deja joue":"pas encore joue") + ")";
+            }
+            else {
+                str += " (mort)";
+            }
+            
+            return str;
         }
 	
 	/**

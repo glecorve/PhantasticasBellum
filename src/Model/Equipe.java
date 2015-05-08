@@ -175,6 +175,14 @@ public class Equipe {
 		return monEtatTour;
 	}
         
+        public int getVie() {
+            int pv = 0;
+            for (int i = 0; i < membres.size(); i++) {
+                pv += membres.get(i).getVie();
+            }
+            return pv;
+        }
+        
         /**
          * Teste si l'équipe courante est battue, c'est-a-dire si tous les personnages sont elimines
          * @return Vrai si l'equipe courante a perdu, faux sinon
@@ -191,6 +199,7 @@ public class Equipe {
         public String toString() {
             String str = "";
             for (Personnage pers : membres) {
+                if (!pers.estVivant()) { str += "** "; }
                 str += pers.toString() + "\n";
             }
             return str;

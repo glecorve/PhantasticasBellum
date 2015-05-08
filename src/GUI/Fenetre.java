@@ -26,6 +26,7 @@ public class Fenetre  extends JFrame{
 		
 		this.partie = maPartie;
 		this.controleur = new ControleurFenetre(this);
+                this.controleur.nouvellePartie();
 		
 		controleur.initVue();
 		this.setIconImage(new ImageIcon(this.getClass().getResource("/images/logo.png")).getImage());
@@ -88,7 +89,7 @@ public class Fenetre  extends JFrame{
         public void setPartie(Partie maPartie) {
             this.partie = maPartie;
             this.controleur = new ControleurFenetre(this);
-		
+	    this.controleur.nouvellePartie();
             controleur.initVue();
         }
 }

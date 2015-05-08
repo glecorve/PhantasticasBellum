@@ -117,7 +117,9 @@ public class VueParamJoueur extends JPanel {
 		panelEquipeSelectionnableHautDeCadre.add(panelEquipeSelectionnableLabelPersonnageTotal);
 		panelEquipeSelectionnable.add(panelScrollTousPersonnages);
 		listerPersonnagesDisponibles();
-		for(final Personnage o : getControleur().getMaPartie().getPersonnagesDisponibles()){
+                List<Personnage> liste = getControleur().getMaPartie().getPersonnagesDisponibles();
+		for (int i = 0; i < liste.size(); i++) {
+                        final Personnage o = liste.get(i);
 			JLabel labelPersonnage = new JLabel();
 			labelPersonnage.setText("Info : " + o.getClasse());
 			
@@ -171,8 +173,8 @@ public class VueParamJoueur extends JPanel {
 		
 		panelEquipeSelectionnableLabelPersonnageTotal.setText(Integer.toString(collectionPersonnages.size()) + " disponibles");
 		
-		for(Personnage o : collectionPersonnages){
-			LayeredPanePersonnage monLayeredPanePersonnage = new LayeredPanePersonnage(controleur, o);
+		for (int i = 0; i < collectionPersonnages.size(); i++) {
+			LayeredPanePersonnage monLayeredPanePersonnage = new LayeredPanePersonnage(controleur, collectionPersonnages.get(i));
 			monLayeredPanePersonnage.ajouterBoutonAjout();
 			
 			panelTousPersonnages.add(monLayeredPanePersonnage);

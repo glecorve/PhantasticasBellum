@@ -35,6 +35,11 @@ public class Coup {
         actions.add(action);
     }
     
+    @Override
+    public Object clone() {
+        return new Coup(auteur, actions);
+    }
+    
     /**
      * Constructeur avec valeurs
      * @param auteur L'auteur du coup

@@ -41,7 +41,15 @@ public abstract class AbstractIA extends Joueur {
      * @param coup Le coup a memoriser
      */
     public final void memoriseCoup(Coup coup) {
-        coupMemorise = coup;
+        if (coup != null) {
+            coupMemorise = (Coup) coup.clone();
+//            System.out.println("##############################");
+//            System.out.println("Mémorisation de " + coupMemorise.toString());
+//            System.out.println("##############################");
+        }
+        else {
+            coupMemorise = coup;
+        }
     }
 
     /**

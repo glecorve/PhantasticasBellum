@@ -34,10 +34,10 @@ public class VueJoueurCombat extends VueJoueur {
 	 * Constructeur
  Va instancier selon l'axe Y : la liste des Personnage, les caracteristiques des Personnage, la liste des actions puis les caracterisques de cette action
 	 * @param controleur controleur de cette interface
-	 * @param monJoueur joueur associe a ce panel
+	 * @param joueur joueur associe a ce panel
 	 */
-	public VueJoueurCombat(ControleurCombat controleur, Joueur monJoueur){
-		super(controleur, monJoueur);
+	public VueJoueurCombat(ControleurCombat controleur, Joueur joueur){
+		super(controleur, joueur);
                 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -45,7 +45,7 @@ public class VueJoueurCombat extends VueJoueur {
 		panelPersonnageCaracteristique = new PanelPersonnageCaracteristique(this);
 		panelActionsNom = new PanelActionsNom(this);
 		panelActionsCaracteristique = new PanelActionsCaracteristique(this);
-		
+	
 		add(panelPersonnageNom);
                 add(new JSeparator());
 		add(panelPersonnageCaracteristique);

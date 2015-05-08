@@ -21,7 +21,18 @@ public class Joueur {
 	private int nombreVictoire = 0;
         private Color couleur;
         
-        private static final Color couleurs[] = {new Color(0, 130, 255), Color.RED, Color.MAGENTA, Color.ORANGE};
+        private static final Color couleurs[] = {new Color(20, 130, 255),
+                                                 new Color(255, 90, 90),
+                                                 new Color(130, 20, 255),
+                                                 new Color(255, 20, 130),
+                                                 new Color(20, 255, 130),
+                                                 new Color(255, 130, 20),
+                                                 new Color(200, 20, 200),
+                                                 new Color(200, 200, 20),
+                                                 new Color(20, 200, 200),
+                                                 new Color(130, 255, 20),
+                                                 new Color(90, 90, 255),
+                                                 new Color(90, 255, 90)};
         private static int couleurIterateur = -1;
         
         private static Color getCouleurSuivante() {
@@ -50,6 +61,11 @@ public class Joueur {
             clone.nombreVictoire = this.nombreVictoire;
             clone.couleur = this.couleur;
             return clone;
+        }
+        
+        @Override
+        public String toString() {
+            return getClass().toString() + " " + getNom() + " =\n" + equipe.toString();
         }
 
 	/**
@@ -269,5 +285,33 @@ public class Joueur {
      */
     public Color getCouleur() {
         return couleur;
+    }
+    
+    /**
+     * Fixe la couleur d'un personnage
+     * @param numero Numero de la couleur souhaitee
+     */
+    public void setCouleur(int numero) {
+        couleur = couleurs[numero % couleurs.length];
+    }
+    
+    public String getCouleurHTML() {
+        String red = Integer.toHexString(couleur.getRed());
+        String green = Integer.toHexString(couleur.getGreen());
+        String blue = Integer.toHexString(couleur.getBlue());
+
+        return "#" + 
+                (red.length() == 1? "0" + red : red) +
+                (green.length() == 1? "0" + green : green) +
+                (blue.length() == 1? "0" + blue : blue);        
+    }
+
+    public int getVie() {
+        if (equipe != null) {
+            return equipe.getVie();
+        }
+        else {
+            return 0;
+        }
     }
 }

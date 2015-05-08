@@ -7,14 +7,11 @@ import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.*;
-
 import Controleur.AbstractControleurJeu;
 import GUI.Vue3.JImagePanel;
 import Model.Joueur;
 import Model.Personnage;
 import Model.Position;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -148,14 +145,14 @@ public abstract class VuePlateau extends JImagePanel implements Observer{
 			Position oPos = o.getPosition();
 			Color oCouleur = null;
                         if (o == getControleur().getPartie().getPersonnageActif()){
-                                oCouleur = new Color(0, 250, 0);
+                                oCouleur = new Color(255, 255, 255);
                         }
                         else {
                                 Color c = o.getProprio().getCouleur();
 				if (o.isDejaJoue()){
-					oCouleur = new Color(Math.min(255, c.getRed()+120),
-                                                Math.min(255, c.getGreen()+120),
-                                                Math.min(255, c.getBlue()+120));
+					oCouleur = new Color((int) Math.min(255, (c.getRed()+300)/2),
+                                                (int) Math.min(255, (c.getGreen()+300)/2),
+                                                (int) Math.min(255, (c.getBlue()+300)/2));
 				} else {
 					oCouleur = c;
 				}

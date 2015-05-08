@@ -76,7 +76,7 @@ public class ControleurCombat extends AbstractControleurJeu {
 			//Reset couleur plateau
 			getVue().getPanelPlateau().afficherPlateauParDefaut();
                         
-                        majConsole(getPartie().getPersonnageActif() + " se déplace en " + maPosition + ".");
+                        getVue().majConsole(getPartie().getNumeroTour(), getPartie().getJoueurActuel(), "Déplacement en " + maPosition);
 			
 		} else if (getPartie().isAttaqueEnCours() && attaque){
 			//Sinon si attaque alors on attaque la case
@@ -115,13 +115,13 @@ public class ControleurCombat extends AbstractControleurJeu {
 			
 			//Met a jour la console
 			if (resultatAttaque.isEmpty()){
-				majConsole("Attaque sans effet sur les personnages.");
+				getVue().majConsole("Attaque sans effet sur les personnages.");
 			}else{
 				for (String o : resultatAttaque){
 					if (attaque){
 						o += " 1 attaque restante.";
 					}
-					majConsole(o);
+					getVue().majConsole(getPartie().getNumeroTour(), getPartie().getJoueurActuel(), o);
 				}
 			}
 		} else {
@@ -160,15 +160,7 @@ public class ControleurCombat extends AbstractControleurJeu {
 			getVue().getPanelPlateau().afficherCouleurPlateau();
 		}
 	}
-
-	/**
-	 * Affiche le label en parametre dans le panel sud
-	 * @param texte Texte a afficher
-	 */
-	public void majConsole(String texte){
-		getVue().majConsole(texte);
-	}
-	
+        
 	/**
 	 * Design pattern observateur/observe, ajoute l'observateur plateau sur les Personnage
 	 */
@@ -194,7 +186,7 @@ public class ControleurCombat extends AbstractControleurJeu {
 		getPartie().setEtatTourPasser();
                 
                 if (attaque && deplacement) {
-                    majConsole(getPartie().getPersonnageActif() + " passe son tour.");
+                    getVue().majConsole(getPartie().getNumeroTour(), getPartie().getJoueurActuel(), getPartie().getPersonnageActif() + " passe son tour.");
                 }
 		
 		//Passe au tour suivant
